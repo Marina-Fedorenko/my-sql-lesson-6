@@ -60,3 +60,35 @@ ALTER TABLE messages
   	add constraint posts_media_id_fk
   		foreign key (media_id) references media(id);
       
+Определить кто больше поставил лайков (всего) - мужчины или женщины? 
+select count(*) 
+from profiles 
+where gender = 'm';
+
+select count(*) 
+from profiles 
+where gender = 'f';
+тут я смогла выделить количество мужчин и женщин из таблицы профилей, а вот как это связать с лайками, не понимаю. попробовала такой запрос:
+select count(*) from likes where  
+( count(*) 
+from profiles 
+where gender = 'm'); но он не работает.
+
+Подсчитать общее количество лайков десяти самым молодым пользователям (сколько лайков получили 10 самых молодых пользователей).
+select count(*) from likes where
+target_id = (SELECT
+  TIMESTAMPDIFF(YEAR, birthday, NOW()) AS age
+FROM
+  profiles
+ order by birthday
+desc
+limit 10);
+-- здесь вложенная формула выдает 10 самых молодых пользователей, а вот как ее правильно ввнедрить в лайки?
+
+Найти 10 пользователей, которые проявляют наименьшую активность в использовании социальной сети (в качестве активности выбрала объем загружаемых файлов)
+SELECT user_id, SUM(size) AS total
+  FROM media
+  GROUP BY size 
+  HAVING total < 100000000
+ limit 5;
+ только тут не получается использовать desc, чтобы отсортировать по возрастанию.
